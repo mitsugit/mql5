@@ -1,0 +1,50 @@
+/*
+// 値渡し a, bは変化しない
+
+void OnStart()
+ {
+//---
+  int a=14,b=8;
+  Print("a and b before call:",a," ",b);
+  double d=FirstMethod(a,b);
+  Print("a and b after call:",a," ",b);
+ }
+
+double FirstMethod(int i,int j)
+ {
+  double res;
+//---
+  i*=2;
+  j/=2;
+  res=i+j;
+//---
+  return(res);
+ }
+
+*/
+
+
+/*
+
+// 参照渡し　a, bは変化する
+void OnStart()
+ {
+//---
+  int a=14,b=8;
+  Print("a and b before call:",a," ",b);
+  double d=SecondMethod(a,b);
+  Print("a and b after call:",a," ",b);
+ }
+
+double SecondMethod(int &i,int &j)
+ {
+  double res;
+//---
+  i*=2;
+  j/=2;
+  res=i+j;
+//---
+  return(res);
+ }
+*/
+
