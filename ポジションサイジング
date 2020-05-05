@@ -1,0 +1,54 @@
+# グローバル変数
+
+double pips;
+double maxlot;
+double minlot;
+int LotDigits = 0;
+
+
+int OnInit()
+  {
+  ～～～～
+  
+   double tickSize = SymbolInfoDouble(Symbol(),SYMBOL_TRADE_TICK_SIZE);
+   if(tickSize == 0.00001 || tickSize == 0.001)
+      pips = tickSize*10;
+   else
+      pips = tickSize;
+      
+   maxlot = SymbolInfoDouble(Symbol(),SYMBOL_VOLUME_MAX);
+   minlot = SymbolInfoDouble(Symbol(),SYMBOL_VOLUME_MIN);
+   if(minlot==0.001) LotDigits=3;
+   if(minlot==0.01) LotDigits=2;
+   if(minlot==0.1) LotDigits=1;
+   if(minlot==1) LotDigits=0;
+   
+   ～～～～～
+   ｝
+   
+void OnTick()
+{
+～～～～～～～～～～～～～～～～～～～～～～
+request.volume = Lots(SymbolInfoDouble(_Symbol, SYMBOL_ASK)-LongLosscutPrice); 
+
+}
+
+
+//function to determine lotsize for every entry
+  
+double Lots(double stoploss = 0)
+{
+
+ double vLots;
+ // when stoploss is defined, lots calculated based on amount that is risked
+if(stoploss!=0) vLots = NormalizeDouble(AccountInfoDouble(ACCOUNT_BALANCE) * (loss_percent/100) / (stoploss/pips) * 10 / 100, LotDigits);
+ // when stoploss not defined, lots calculated to be 1% of current account balance
+ else  vLots = NormalizeDouble(AccountInfoDouble(ACCOUNT_BALANCE) * (loss_percent/100) / 10000 *100, LotDigits);
+
+ 
+ 
+ if(vLots>maxlot)vLots = maxlot;
+ if(vLots<minlot)vLots = minlot;
+return(vLots);
+
+}
