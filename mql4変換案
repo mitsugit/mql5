@@ -1,0 +1,205 @@
+      {
+      //if(pos < 0 && (NowTime == T_CloseEndTime))// && Minute() == Close_Minute
+      while(T_pos < 0)
+      {
+         double T_SOrderClosePrice = NormalizeDouble((double)T_ProfitShortPrice, 3);
+         
+        /*MqlTradeRequest T_request = {0};
+         MqlTradeResult T_result = {0};
+         T_request.action = TRADE_ACTION_DEAL;
+         T_request.symbol = _Symbol;
+         T_request.volume = T_Sorder_lots;
+         //request.price = T_SOrderClosePrice;
+         T_request.price = Ask; // TODO Ask or Sorder
+         T_request.type = ORDER_TYPE_BUY;
+         T_request.position = T_Ticket;
+         T_request.deviation = T_Slippage; //T_Slippage
+         T_request.tp = 0;
+         T_request.comment = "ショートポジション強制決済 Tokyo";*/
+         
+ int T_b = OrderSend(_Symbol,OP_BUY,T_Sorder_lots,Ask,T_Slippage,0,0,"ショートポジション強制決済 Tokyo",T_Magic,0,clrGreen);
+             
+         if(T_b>0)T_pos = 0;
+      
+      }
+      
+      // then buyposiition 
+      //if(pos > 0 && (NowTime == T_CloseEndTime)) //ポジションが+1なら…(決済)
+      while(T_pos > 0)
+      {
+         double T_LOrderClosePrice = NormalizeDouble((double)T_ProfitLongPrice, 3);
+         
+        /* MqlTradeRequest T_request = {0};
+         MqlTradeResult T_result = {0};
+         T_request.action = TRADE_ACTION_DEAL;
+         T_request.symbol = _Symbol;
+         T_request.volume = T_Lorder_lots;
+         //request.price = T_LOrderClosePrice;
+         T_request.price = Bid; // TODO Bid or Lorderprice
+         T_request.type = ORDER_TYPE_SELL;
+         T_request.position = T_Ticket;
+         T_request.deviation = T_Slippage; //T_Slippage
+         T_request.tp = 0;
+         T_request.comment = "ロングポジション強制決済 Tokyo";*/
+         
+          T_b = OrderSend(_Symbol,OP_SELL,T_Lorder_lots,Bid,T_Slippage,0,0,"ロングポジション強制決済 Tokyo",T_Magic,0,clrRed);
+         if(T_b > 0)T_pos = 0;
+      
+      }
+   }
+               
+      // then sellposition  
+      if( T_pos < 0 && T_High[0] > T_ProfitShortPrice)
+      { 
+       T_SOrderClosePrice = NormalizeDouble((double)T_ProfitShortPrice, 3);
+      
+      /*MqlTradeRequest T_request = {0};
+      MqlTradeResult T_result = {0};
+      T_request.action = TRADE_ACTION_DEAL;
+      T_request.symbol = _Symbol;
+      T_request.volume = T_Sorder_lots;
+      //request.price = T_SOrderClosePrice;
+      T_request.price = Ask; // TODO Ask or Sorder
+      T_request.type = ORDER_TYPE_BUY;
+      T_request.position = T_Ticket;
+      T_request.deviation = T_Slippage; //T_Slippage
+      T_request.tp = 0;
+      T_request.comment = "ショートポジション決済 Tokyo";*/
+      
+       T_b = OrderSend(_Symbol,OP_BUY,T_Sorder_lots,Ask,T_Slippage,0,0,"ショートポジション決済 Tokyo",T_Magic,0,clrGreen);   
+      if(T_b > 0)T_pos = 0;
+      
+      }
+      
+      // then buyposiition
+      if (T_pos > 0 && T_ProfitLongPrice > T_Low[0])
+      {
+      
+       T_LOrderClosePrice = NormalizeDouble((double)T_ProfitLongPrice, 3);
+      
+      /*MqlTradeRequest T_request = {0};
+      MqlTradeResult T_result = {0};
+      T_request.action = TRADE_ACTION_DEAL;
+      T_request.symbol = _Symbol;
+      T_request.volume = T_Lorder_lots;
+      //request.price = T_LOrderClosePrice;
+      T_request.price = Bid; // TODO Bid or Lorderprice
+      T_request.type = ORDER_TYPE_SELL;
+      T_request.position = T_Ticket;
+      T_request.deviation = T_Slippage; //T_Slippage
+      T_request.tp = 0;
+      T_request.comment = "ロングポジション決済 Tokyo";*/
+      
+      T_b = OrderSend(_Symbol,OP_SELL,T_Lorder_lots,Bid,T_Slippage,0,0,"ロングポジション決済 Tokyo",T_Magic,0,clrRed); 
+      if(T_b>0)T_pos = 0;
+      
+      }
+      
+      if(T_EntryStartTime < T_EntryEndTime)//「自分の指定した開始時刻を分換算した値が、指定した終了時刻を分換算した値より小さい時、」
+      {
+      //「現在時刻を分換算した値が0より大きい、かつ、指定開始時刻分換算より小さい場合」or「現在時刻を分換算した値が指定終了時刻より大きい、かつ、1439より小さい場合」
+      if((0<=NowTime && NowTime<T_EntryStartTime) || (T_EntryEndTime<=NowTime && NowTime<=1439) || (NowTime > T_CloseEndTime))//「||」は「or」と同じ。
+      return;//returnより下のコードを実行しない。
+      }
+   
+      if(T_EntryEndTime < T_EntryStartTime)//「終了時刻を分換算した値が指定開始時刻分換算より小さい場合」
+      {
+      //「現在時刻を分換算した値が終了時刻より大きい、かつ、指定開始時刻分換算より小さい場合」
+      if((T_EntryEndTime<=NowTime) && (NowTime<T_EntryStartTime))
+      return;//returnより下のコードを実行しない。
+      }
+   
+      // get chartTimebars
+      datetime Time2[];
+      int Time_num = 1;
+      ArraySetAsSeries(Time2,true);
+      CopyTime(_Symbol, _Period, 0, Time_num, Time2);
+   
+       //get_buy_position
+      if(T_High[0] > T_SetLongPrice)
+      {
+      
+      
+       //CONVERT ORDER ENTRY FORMAT FROM MQL5 TO MQL4
+       
+         double T_LR = NormalizeDouble(((Account/EArunning)*T_LRiskTake), T_DepositCurrency2);
+         double T_LongPositionSize = NormalizeDouble((T_LR/T_LLValue * T_StraightorCross), 2);
+         
+        /* MqlTradeRequest T_request = {0};
+         MqlTradeResult T_result = {0};
+
+         T_request.action = TRADE_ACTION_DEAL;
+         T_request.symbol = _Symbol;
+         T_request.volume = T_LongPositionSize; // Lotsb
+         T_request.price = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+         T_request.type = ORDER_TYPE_BUY;
+         T_request.deviation = T_Slippage; //T_Slippage
+         T_request.sl = T_LongLosscutPrice;
+         T_request.tp = 0;
+         T_request.comment = "get_long_position Tokyo";*/
+   
+         //if(pos == 0 && Time[0] > T_LongEntryTime && PositionsTotal() == 0)
+         //if(T_pos == 0 && Time[0] > T_LongEntryTime && (T_EntryCount < T_EntryCountLimit) && PositionsTotal() == 0)
+         if(T_pos == 0 && Time2[0] > T_LongEntryTime && (T_EntryCount < T_EntryCountLimit))
+         {
+ T_b = OrderSend(_Symbol,OP_BUY,T_LongPositionSize,SymbolInfoDouble(_Symbol, SYMBOL_ASK),T_Slippage,T_LongLosscutPrice,0,"get_long_position Tokyo",T_Magic,0,clrGreen);
+   if(T_b>0){
+   
+         T_Ticket = T_b;
+         T_EntryCount++;
+         T_Lorder_lots = T_LongPositionSize;
+   }
+         
+          //  if (T_result.retcode == TRADE_RETCODE_DONE){
+          //  T_Ticket = T_result.deal;
+          //  T_EntryCount++;
+          //  T_Lorder_lots = T_result.volume;
+          //  }
+         }
+         
+      T_LongEntryTime = Time[0];
+      }
+   
+      //get_sell_position
+      if(T_SetShortPrice > T_Low[0])
+      {
+         double T_SR = NormalizeDouble(((Account/EArunning)*T_SRiskTake), T_DepositCurrency2);
+         double T_ShortPositionSize = NormalizeDouble((T_SR/T_SLValue * T_StraightorCross), 2);
+      
+      
+         /*MqlTradeRequest T_request = {0};
+         MqlTradeResult T_result = {0};
+         
+         T_request.action = TRADE_ACTION_DEAL;
+         T_request.symbol = _Symbol;
+         T_request.volume = T_ShortPositionSize; // Lots
+         T_request.type = ORDER_TYPE_SELL; // TODO before Order_type_sell
+         T_request.price = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+         T_request.deviation = T_Slippage; //T_Slippage
+         T_request.sl = T_ShortLosscutPrice;
+         T_request.tp = 0;
+         T_request.comment = "get_short_position Tokyo";*/
+  
+      
+      //if(pos == 0 && Time[0] > T_ShortEntryTime && PositionsTotal() == 0) // add position info
+      //if(T_pos == 0 && Time[0] > T_ShortEntryTime && T_EntryCount < T_EntryCountLimit && PositionsTotal() == 0)
+      if(T_pos == 0 && Time[0] > T_ShortEntryTime && T_EntryCount < T_EntryCountLimit)
+      {
+      
+    T_b = OrderSend(_Symbol,OP_SELL,T_ShortPositionSize,SymbolInfoDouble(_Symbol, SYMBOL_BID),T_Slippage,T_ShortLosscutPrice,0,"get_short_position Tokyo",T_Magic,0,clrRed);
+   if(T_b>0){
+   
+         T_Ticket = T_b;
+         T_EntryCount++;
+         T_Sorder_lots = T_ShortPositionSize;
+   }     
+        // if (T_result.retcode == TRADE_RETCODE_DONE){
+        // T_Ticket = T_result.deal;
+       //  T_EntryCount++;
+       //  T_Sorder_lots = T_result.volume;
+       //  }
+      }
+      T_ShortEntryTime = Time[0];
+     
+     
+      }
