@@ -1,0 +1,33 @@
+int OnInit()
+{
+
+Account1 = AccountInfoDouble(ACCOUNT_BALANCE);
+
+}
+ 
+ 
+ void OnTick()
+ {
+ 
+  Account = Account1+profitCalculator(SW_Magic);
+  
+  double profitCalculator(int magic){
+ 
+    double result = 0;
+ 
+    for(int x = 0; x < PositionsTotal(); x++){
+    
+     if(PositionSelectByTicket(PositionGetTicket(x)))
+       if(PositionGetInteger(POSITION_MAGIC) == magic)
+         result += PositionGetDouble(POSITION_PROFIT);
+    }
+    return result;
+ }
+ 
+ }
+ 
+ 
+ 
+ 
+
+ 
