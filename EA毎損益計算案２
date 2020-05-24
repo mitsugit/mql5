@@ -1,0 +1,47 @@
+//参考
+//https://www.youtube.com/watch?v=0obDWynRJMk&t=288s
+
+
+double GetProfit()
+
+{
+ 
+
+//--- オブジェクトを作成する
+  string   name;
+  uint     TotalNumberOfDeals=HistoryDealsTotal();
+  ulong    TicketNumber=0;
+  //double   price;
+  //double   profit;
+  //datetime time;
+  //string   symbol;
+  //long     type;
+  //long     entry;
+  
+  double   total_profit =0;
+ 
+  // get the history
+  HistorySelect(0,TimeCurrent());
+ 
+  // go through all the deals
+  for(uint i=0;i<TotalNumberOfDeals;i++)
+  
+  {
+     // we look for a ticket number
+     if TicketNumber=HistoryDealGetTicket(i)>0)
+     {
+      // get the profit
+      OrderProfit=HistoryDealGetDouble(TicketNumber,DEAL_PROFIT);
+      
+      total_profit+=OrderProfit;
+      
+      
+     } // if end
+     
+     
+     
+  } // for end
+  
+  
+  return total_profit;
+}
