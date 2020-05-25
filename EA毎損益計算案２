@@ -1,6 +1,3 @@
-//参考
-//https://www.youtube.com/watch?v=0obDWynRJMk&t=288s
-
 double GetProfit()
 
 {
@@ -19,30 +16,36 @@ double GetProfit()
   
   double OrderProfit=0;
   
-  double   total_profit =0;
+  double total_profit=0;
  
   // get the history
+  
+  
   HistorySelect(0,TimeCurrent());
  
   // go through all the deals
   for(uint i=0;i<TotalNumberOfDeals;i++)
   
   {
-     // we look for a ticket number
-     if (TicketNumber=HistoryDealGetTicket(i)>0)
-     {
-      // get the profit
-      OrderProfit=HistoryDealGetDouble(TicketNumber,DEAL_PROFIT);
-      
-      total_profit+=OrderProfit;
-      
-      
-     } // if end
+     //  get the ticket number
+     TicketNumber = TicketNumber=HistoryDealGetTicket(i);
+     
+     // get the profit  
+     OrderProfit=HistoryDealGetDouble(TicketNumber,DEAL_PROFIT);
      
      
+     // get the total profit 
+     total_profit += OrderProfit;
+     
+     
+        
      
   } // for end
   
   
+  //return total_profit;
+  //return OrderProfit;
+  //return TicketNumber;  1
+  //return TotalNumberOfDeals;
   return total_profit;
 }
