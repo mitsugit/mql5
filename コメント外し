@@ -1,0 +1,12 @@
+vscode上で
+
+https://toragramming.com/programming/regexp/regexp-delete-css-comment/
+
+*/ ~   */
+
+正規表現:  [\s\t]*/\*/?(\n|[^/]|[^*]/)*\*/
+
+
+//
+
+正規表現:  /\*[\s\S]*?\*/|//.*
